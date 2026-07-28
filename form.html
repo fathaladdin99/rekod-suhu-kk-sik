@@ -1,0 +1,484 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Rekod Suhu Peti Sejuk Farmasi Logistik</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --brand: #1e3a8a;
+        --brand-accent: #2563eb;
+        --muted: #f1f5f9;
+        --ok: #15803d;
+        --err: #b00020;
+        --warn: #915600;
+        --border: #cbd5e1;
+      }
+      body {
+        margin: 0;
+        font: 15px 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      .hero {
+        min-height: 120px;
+        background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      }
+      .wrap {
+        max-width: 760px;
+        margin: -50px auto 24px;
+        padding: 0 14px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+      }
+      h2 {
+        margin: 4px 0 20px;
+        text-align: center;
+        color: var(--brand);
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+      fieldset {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 0 0 16px;
+        padding: 16px;
+        background: #f8fafc;
+      }
+      legend {
+        padding: 0 8px;
+        font-weight: 700;
+        color: var(--brand-accent);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      label {
+        display: block;
+        font-weight: 700;
+        margin: 8px 0 4px;
+        font-size: 0.9rem;
+      }
+      input[type="number"],
+      input[type="text"],
+      input[type="time"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 15px;
+        background: #ffffff;
+        box-sizing: border-box;
+      }
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+      .row {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .grid-3 {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      @media (max-width: 640px) {
+        .row, .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .inline {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+      button {
+        padding: 12px 20px;
+        border: 0;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+      .primary {
+        background: var(--brand-accent);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      }
+      .muted {
+        background: var(--muted);
+        color: #334155;
+        border: 1px solid var(--border);
+      }
+      .note {
+        color: #64748b;
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .window-badge {
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+      .window-badge.in {
+        background: #f0fdf4;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+      }
+      .window-badge.out {
+        background: #fffbebfb;
+        color: #d97706;
+        border: 1px solid #fef3c7;
+      }
+      .hidden { display: none !important; }
+
+      /* Modal Styling */
+      .modal {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(3px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 9999;
+      }
+      .modal-content {
+        background: #fff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        width: 90%; max-width: 440px;
+        text-align: center;
+      }
+      .modal-actions {
+        margin-top: 20px;
+        display: flex; justify-content: center; gap: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hero"></div>
+    <div class="wrap">
+      <div class="card">
+        <h2>❄️ REKOD SUHU PETI SEJUK FARMASI</h2>
+
+        <form id="f">
+          <fieldset>
+            <legend>1. Pilih Lokasi Peti Sejuk</legend>
+            <label for="lokasi">Peti Sejuk</label>
+            <select name="lokasi" id="lokasi" required></select>
+          </fieldset>
+
+          <fieldset>
+            <legend>2. Tarikh & Waktu Log</legend>
+            <div class="row">
+              <div>
+                <label for="date">Tarikh</label>
+                <input type="date" id="date" name="date" required />
+              </div>
+              <div>
+                <label>Sesi Waktu Log</label>
+                <div class="inline" style="margin-top:6px;">
+                  <label><input type="radio" name="slot" value="AM" /> AM (Pagi 07:00-13:00)</label>
+                  <label><input type="radio" name="slot" value="PM" /> PM (Petang 14:00-18:00)</label>
+                </div>
+              </div>
+            </div>
+            <div id="windowNote" class="window-badge in">Status waktu log.</div>
+          </fieldset>
+
+          <fieldset>
+            <legend>3. Bacaan Suhu (°C)</legend>
+            <div class="grid-3">
+              <div>
+                <label for="min">Suhu Minimum</label>
+                <input type="number" step="0.1" id="min" name="min" required />
+              </div>
+              <div>
+                <label for="semasa">Suhu Semasa</label>
+                <input type="number" step="0.1" id="semasa" name="semasa" required />
+              </div>
+              <div>
+                <label for="max">Suhu Maksimum</label>
+                <input type="number" step="0.1" id="max" name="max" required />
+              </div>
+            </div>
+            <div class="note" id="rangeNote">Julat suhu yang dibenarkan: -4°C hingga 17°C (Normal: 2°C - 8°C).</div>
+          </fieldset>
+
+          <fieldset>
+            <legend>4. Perkara (Opsional)</legend>
+            <label for="perkara">Perkara / Status</label>
+            <select name="perkara" id="perkara">
+              <option value="">-- Pilih Perkara --</option>
+            </select>
+          </fieldset>
+
+          <fieldset>
+            <legend>5. Tandatangan / Nama Pencatat</legend>
+            <label for="nama">Nama Ringkas Pencatat</label>
+            <input type="text" id="nama" name="nama" placeholder="Contoh: Hafiza / John" required />
+          </fieldset>
+
+          <!-- Catatan Luar Julat -->
+          <fieldset id="incidentBox">
+            <legend>6. Catatan Suhu Luar Julat (Opsional)</legend>
+            <label>Adakah suhu di luar julat selamat (+2.0°C - +8.0°C)?</label>
+            <div class="inline" style="margin-top:4px;">
+              <label><input type="radio" name="incidentToggle" id="incidentNo" value="NO" checked /> Tidak</label>
+              <label><input type="radio" name="incidentToggle" id="incidentYes" value="YES" /> Ya, Tambah Catatan</label>
+            </div>
+
+            <div id="incidentFields" class="hidden" style="margin-top:12px;">
+              <div class="row">
+                <div>
+                  <label for="incidentDate">Tarikh Kejadian</label>
+                  <input type="date" id="incidentDate" />
+                </div>
+                <div>
+                  <label for="incidentTime">Masa Kejadian</label>
+                  <input type="time" id="incidentTime" />
+                </div>
+              </div>
+              <div style="margin-top:8px;">
+                <label for="incidentOfficer">Nama Pegawai Melapor</label>
+                <input type="text" id="incidentOfficer" placeholder="Nama Pegawai" />
+              </div>
+              <div style="margin-top:8px;">
+                <label for="incidentNote">Perkara / Penjelasan & Tindakan</label>
+                <textarea id="incidentNote" placeholder="Terangkan tindakan yang telah diambil..."></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="button" class="muted" id="btnReset">Reset</button>
+            <button type="submit" class="primary">🚀 Hantar Rekod Suhu</button>
+          </div>
+
+          <div id="msg" style="margin-top:12px; text-align:center; font-weight:700;"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let CONFIG = null;
+
+      const todayISO = () => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      };
+      const nowHHMM = () => {
+        const d = new Date();
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      };
+
+      function updateTimeWindowBadge() {
+        const hour = new Date().getHours();
+        const slotRadio = document.querySelector('input[name="slot"]:checked');
+        const slot = slotRadio ? slotRadio.value : 'AM';
+        const note = document.getElementById('windowNote');
+
+        if (slot === 'AM') {
+          if (hour >= 7 && hour < 13) {
+            note.className = 'window-badge in';
+            note.innerHTML = '🟢 Dalam Sesi Waktu AM Rasmi (07:00 - 13:00)';
+          } else {
+            note.className = 'window-badge out';
+            note.innerHTML = '⚠️ Luar Masa AM Rasmi. Julat disyorkan: 07:00 AM - 1:00 PM';
+          }
+        } else {
+          if (hour >= 14 && hour <= 18) {
+            note.className = 'window-badge in';
+            note.innerHTML = '🟢 Dalam Sesi Waktu PM Rasmi (14:00 - 18:00)';
+          } else {
+            note.className = 'window-badge out';
+            note.innerHTML = '⚠️ Luar Masa PM Rasmi. Julat disyorkan: 2:00 PM - 6:00 PM';
+          }
+        }
+      }
+
+      function initDateAndSlot() {
+        const dEl = document.getElementById('date');
+        dEl.value = todayISO();
+        if (CONFIG) {
+          dEl.min = CONFIG.dateMin;
+          dEl.max = CONFIG.dateMax;
+        }
+
+        const slot = new Date().getHours() < 14 ? 'AM' : 'PM';
+        const slotRadio = document.querySelector(`input[name="slot"][value="${slot}"]`);
+        if (slotRadio) slotRadio.checked = true;
+
+        document.getElementById('incidentDate').value = dEl.value;
+        document.getElementById('incidentTime').value = nowHHMM();
+        updateTimeWindowBadge();
+      }
+
+      function populateLokasi() {
+        const sel = document.getElementById('lokasi');
+        sel.innerHTML = '';
+        CONFIG.lokasiList.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt.value;
+          o.textContent = opt.label;
+          sel.appendChild(o);
+        });
+        loadPerkara();
+      }
+
+      function loadPerkara() {
+        const sel = document.getElementById('perkara');
+        sel.innerHTML = '<option value="">-- Pilih Perkara --</option>';
+        CONFIG.perkara.forEach((p) => {
+          const o = document.createElement('option');
+          o.value = p.value;
+          o.textContent = p.label;
+          sel.appendChild(o);
+        });
+      }
+
+      function showIncidentFields(show) {
+        document.getElementById('incidentFields').classList.toggle('hidden', !show);
+      }
+
+      document.querySelectorAll('input[name="slot"]').forEach(r => {
+        r.addEventListener('change', updateTimeWindowBadge);
+      });
+
+      document.addEventListener('change', (e) => {
+        if (e.target && e.target.name === 'incidentToggle') {
+          showIncidentFields(e.target.value === 'YES');
+        }
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        document.getElementById('f').reset();
+        initDateAndSlot();
+        document.getElementById('incidentNo').checked = true;
+        showIncidentFields(false);
+        document.getElementById('msg').textContent = '';
+      });
+
+      document.getElementById('f').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const payload = {
+          lokasi: fd.get('lokasi'),
+          date: fd.get('date'),
+          slot: fd.get('slot'),
+          min: fd.get('min'),
+          semasa: fd.get('semasa'),
+          max: fd.get('max'),
+          perkara: fd.get('perkara'),
+          nama: fd.get('nama'),
+          incident: null
+        };
+
+        if (document.getElementById('incidentYes').checked) {
+          payload.incident = {
+            enabled: true,
+            date: document.getElementById('incidentDate').value || todayISO(),
+            time: document.getElementById('incidentTime').value || nowHHMM(),
+            note: document.getElementById('incidentNote').value || '',
+            officer: document.getElementById('incidentOfficer').value || payload.nama || ''
+          };
+        }
+
+        const msg = document.getElementById('msg');
+        msg.innerHTML = '<span style="color:var(--brand-accent);">Menghantar...</span>';
+
+        google.script.run
+          .withSuccessHandler((res) => {
+            if (res && res.already) {
+              const modal = document.getElementById('overwriteModal');
+              modal.classList.remove('hidden');
+
+              document.getElementById('confirmOverwrite').onclick = () => {
+                modal.classList.add('hidden');
+                payload.overwrite = true;
+                google.script.run
+                  .withSuccessHandler((res2) => {
+                    if (res2 && res2.ok) {
+                      showSuccessModal();
+                      document.getElementById('btnReset').click();
+                    } else {
+                      msg.innerHTML = '<span style="color:var(--err);">Gagal overwrite data.</span>';
+                    }
+                  })
+                  .handleSubmit(payload);
+              };
+
+              document.getElementById('cancelOverwrite').onclick = () => {
+                modal.classList.add('hidden');
+                msg.innerHTML = '<span style="color:var(--warn);">Penghantaran dibatalkan.</span>';
+              };
+              return;
+            }
+
+            if (res && res.ok) {
+              showSuccessModal();
+              document.getElementById('btnReset').click();
+            } else {
+              msg.innerHTML = '<span style="color:var(--err);">Gagal menyimpan.</span>';
+            }
+          })
+          .withFailureHandler((err) => {
+            msg.innerHTML = `<span style="color:var(--err);">${err.message || 'Ralat server.'}</span>`;
+          })
+          .handleSubmit(payload);
+      });
+
+      (function boot() {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run.withSuccessHandler((cfg) => {
+            CONFIG = cfg;
+            populateLokasi();
+            initDateAndSlot();
+          }).getConfig();
+        }
+      })();
+
+      function showSuccessModal() {
+        document.getElementById('successModal').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('successModal').classList.add('hidden');
+        }, 2000);
+      }
+    </script>
+
+    <div id="successModal" class="modal hidden">
+      <div class="modal-content">
+        <h3 style="color:var(--ok);margin-bottom:12px;">✅ Berjaya Dihantar</h3>
+        <p>Suhu telah berjaya direkodkan ke Google Spreadsheet.</p>
+      </div>
+    </div>
+
+    <div id="overwriteModal" class="modal hidden">
+      <div class="modal-content">
+        <p>Suhu telah dicatatkan pada tarikh dan masa tersebut. Anda pasti mahu mengemaskini (overwrite) data ini?</p>
+        <div class="modal-actions">
+          <button class="muted" id="cancelOverwrite">Batal</button>
+          <button class="primary" id="confirmOverwrite">Overwrite</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
