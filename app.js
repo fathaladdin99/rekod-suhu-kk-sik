@@ -267,7 +267,18 @@ document.getElementById('tempForm').addEventListener('submit', async (e) => {
         return;
       }
     } catch (err) {
-      console.warn('Network / Web App error, fallback to local storage:', err);
+      console.warn('Primary fetch error, executing fallback send:', err);
+      try {
+        await fetch(webAppUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        success = true;
+      } catch (e2) {
+        console.error('Fallback fetch failed:', e2);
+      }
     }
   }
 

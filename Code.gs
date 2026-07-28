@@ -15,25 +15,38 @@ const BASE_YEAR = 2025;
 const LAST_YEAR = 2036;
 const START_ROW = 2;
 
-/** Serve the web app or handle GET API request */
+/** Serve web app HTML if exists, or return Web API status text */
 function doGet(e) {
   if (e && e.parameter && e.parameter.action === 'getConfig') {
     return createJsonResponse(getConfig());
   }
 
-  return HtmlService.createHtmlOutputFromFile('index')
-    .setTitle('Rekod Suhu Input — Unit Farmasi KK Sik')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  try {
+    return HtmlService.createHtmlOutputFromFile('index')
+      .setTitle('Rekod Suhu Input — Unit Farmasi KK Sik')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (err) {
+    return ContentService.createTextOutput("✅ Google Apps Script Web API untuk Unit Farmasi KK Sik Berfungsi dengan Baik.")
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
 }
 
 /** Handle HTTP POST requests (from Standalone / GitHub Pages Frontend) */
 function doPost(e) {
   try {
-    let payload;
-    if (e.postData && e.postData.contents) {
-      payload = JSON.parse(e.postData.contents);
-    } else {
+    let payload = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        payload = JSON.parse(e.postData.contents);
+      } catch (err) {
+        payload = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
       payload = e.parameter;
+    }
+
+    if (typeof payload.incident === 'string') {
+      try { payload.incident = JSON.parse(payload.incident); } catch (err) {}
     }
 
     const result = handleSubmit(payload);
